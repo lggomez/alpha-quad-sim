@@ -40,21 +40,26 @@ func initializeRouter() {
 }
 
 func tasksHandle(w http.ResponseWriter, r *http.Request) {
-	taskParam := strings.TrimPrefix(r.URL.Path, "/tasks/")
+	if r.Header.Get("X-Appengine-Cron") == "true" {
+		taskParam := strings.TrimPrefix(r.URL.Path, "/tasks/")
 
-	if taskParam == "initdb" {
-		// Print simulation status per requirement
-		days := DefaultDays
-		sim := NewSimulation()
-		_, error := sim.Simulate(days, NewSimluatorConfig(false, true))
+		if taskParam == "initdb" {
+			// Print simulation status per requirement
+			days := DefaultDays
+			sim := NewSimulation()
+			_, error := sim.Simulate(days, NewSimluatorConfig(false, true))
 
-		if error != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte("500 - Error :" + error.Error()))
-		} else {
-			w.WriteHeader(http.StatusOK)
-			w.Write([]byte("200 - Database was initialized successfully"))
+			if error != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				w.Write([]byte("500 - Error :" + error.Error()))
+			} else {
+				w.WriteHeader(http.StatusOK)
+				w.Write([]byte("200 - Database was initialized successfully"))
+			}
 		}
+	} else {
+		w.WriteHeader(http.StatusForbidden)
+		w.Write([]byte("403 - Forbidden"))
 	}
 }
 
