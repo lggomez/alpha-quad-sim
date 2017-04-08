@@ -1,0 +1,5 @@
+cron:
+- description: Database initialization
+  url: /tasks/initdb
+  timezone: America/Argentina/Buenos_Aires
+  schedule: 9 of april 00:01

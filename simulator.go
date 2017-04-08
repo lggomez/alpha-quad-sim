@@ -82,10 +82,14 @@ func (a *AlphaQuadSimulator) PrintAsString() {
 }
 
 // Simulate - Simulate the system's planet current positions and prints the results, persisting them into the database
-func (sim *AlphaQuadSimulator) Simulate(days int, cfg *SimulatorConfig) string {
+func (sim *AlphaQuadSimulator) Simulate(days int, cfg *SimulatorConfig) (string, error) {
 	minAreaDay := 0
 	minArea := math.MaxFloat32
 	lastDayClimate := "regular"
+	error := error(nil)
+
+	// Planets are aligned with the sun on day 0
+	sim.ChangeClimate("dry")
 
 	for i := 1; i <= days; i++ {
 		sim.Advance(int8(i))
@@ -118,7 +122,7 @@ func (sim *AlphaQuadSimulator) Simulate(days int, cfg *SimulatorConfig) string {
 		}
 
 		if cfg.PersistClimates {
-			SaveClimate(i, sim.currentClimate)
+			error = SaveClimate(i, sim.currentClimate)
 		}
 	}
 
@@ -128,6 +132,6 @@ func (sim *AlphaQuadSimulator) Simulate(days int, cfg *SimulatorConfig) string {
 		fmt.Println("Optimal climate periods:", sim.ClimateMap["optimal"])
 	}
 
-	return lastDayClimate
+	return lastDayClimate, error
 }
 

@@ -6,40 +6,55 @@ import (
 	"strconv"
 	"os"
 	"google.golang.org/appengine"
-	"google.golang.org/appengine/log"
 	"strings"
 )
 
 const WelcomeMessage = "Welcome to the climate registry. Please access the clima API via 'URL/clima/day' (day is an int)"
+const DefaultDays = 3650
 
 type Response struct {
-	Path string
 	Climate string `json:"clima"`
 	Day     int    `json:"dia"`
 }
 
 func main() {
+	initializeRouter()
+	appengine.Main()
+
+	if verifyOfflineMode() {
+		// Print simulation status per requirement
+		days := DefaultDays
+		sim := NewSimulation()
+		sim.Simulate(days, NewSimluatorConfig(true, false))
+	}
+}
+func initializeRouter() {
 	mux := http.NewServeMux()
 
 	// Expose REST api per bonus requirement
 	mux.HandleFunc("/", indexHandle)
 	mux.HandleFunc("/clima/", climaHandle)
 	mux.HandleFunc("/clima", climaHandle)
+	mux.HandleFunc("/tasks/", tasksHandle)
 	http.Handle("/", mux)
-	appengine.Main()
+}
 
-	initDb, days := verifyInitializeDbMode()
-	if initDb {
-		// Persist simulation status per bonus requirement
-		sim := NewSimulation()
-		sim.Simulate(days, NewSimluatorConfig(false, true))
-	}
+func tasksHandle(w http.ResponseWriter, r *http.Request) {
+	taskParam := strings.TrimPrefix(r.URL.Path, "/tasks/")
 
-	if verifyOfflineMode() {
+	if taskParam == "initdb" {
 		// Print simulation status per requirement
-		days := 3650
+		days := DefaultDays
 		sim := NewSimulation()
-		sim.Simulate(days, NewSimluatorConfig(true, false))
+		_, error := sim.Simulate(days, NewSimluatorConfig(false, true))
+
+		if error != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("500 - Error :" + error.Error()))
+		} else {
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte("200 - Database was initialized successfully"))
+		}
 	}
 }
 
@@ -49,8 +64,6 @@ func indexHandle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ctx := appengine.NewContext(r)
-	log.Infof(ctx, "Index hit")
 	json.NewEncoder(w).Encode(WelcomeMessage)
 }
 
@@ -65,32 +78,43 @@ func climaHandle(w http.ResponseWriter, r *http.Request) {
 	dayIntParam := int64(0)
 	dayIntParam, err := strconv.ParseInt(dayParam, 10, 64)
 
-	if err != nil {
+	if err == nil {
+		var statusCode int
+		response, statusCode = getClimateResponse(dayIntParam)
+		w.WriteHeader(statusCode)
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
 		response = &Response{
 			Climate: "invalid value in path " + r.URL.Path,
 			Day:     -1,
 		}
-	} else {
-		response = getClimateResponse(dayIntParam)
 	}
 
 	json.NewEncoder(w).Encode(response)
 }
 
-func getClimateResponse(dayIntParam int64) *Response {
+func getClimateResponse(dayIntParam int64) (*Response, int) {
 	response := &Response{}
-
+	var statusCode int
 	days := int(dayIntParam)
 
-	sim := NewSimulation()
-	climate := sim.Simulate(int(days), NewSimluatorConfig(false, false))
+	err, climate := GetClimate(int(days))
 
-	response = &Response{
-		Climate: climate,
-		Day:     int(days),
+	if err == nil {
+		statusCode = http.StatusOK
+		response = &Response{
+			Climate: climate,
+			Day:     int(days),
+		}
+	} else {
+		statusCode = http.StatusBadRequest
+		response = &Response{
+			Climate: "error: " + err.Error(),
+			Day:     -1,
+		}
 	}
 
-	return response
+	return response, statusCode
 }
 
 func verifyOfflineMode() bool {
@@ -99,14 +123,4 @@ func verifyOfflineMode() bool {
 		offlineModeEnabled = os.Args[1] == "offline"
 	}
 	return offlineModeEnabled
-}
-
-func verifyInitializeDbMode() (bool, int) {
-	initDb := false
-	days := int64(0)
-	if len(os.Args) > 2 {
-		initDb = os.Args[1] == "initdb"
-		days, _ = strconv.ParseInt(os.Args[2], 10, 64)
-	}
-	return initDb, int(days)
 }

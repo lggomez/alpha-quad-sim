@@ -2,13 +2,18 @@ package main
 
 import (
 	"os"
-	"log"
+	"fmt"
+	"errors"
 )
 
-func MustGetenv(k string) string {
+func GetEnvironmentVariable(k string) (string, error) {
 	v := os.Getenv(k)
+	err := error(nil)
+
 	if v == "" {
-		log.Panicf("%s environment variable not set.", k)
+		message := fmt.Sprintf("%s environment variable not set.", k)
+		err = errors.New(message)
 	}
-	return v
+
+	return v, err
 }
