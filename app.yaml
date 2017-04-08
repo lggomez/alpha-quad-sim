@@ -1,0 +1,11 @@
+runtime: go
+api_version: go1
+
+handlers:
+- url: /.*
+  script: _go_app
+  
+env_variables:
+  CLOUDSQL_CONNECTION_NAME: superb-webbing-163902:us-central1:alpha-quad-sim-ml
+  CLOUDSQL_USER: root
+  CLOUDSQL_PASSWORD: 123456
