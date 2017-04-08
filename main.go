@@ -23,21 +23,26 @@ func main() {
 	http.HandleFunc("/clima/", climaHandle)
 	appengine.Main()
 
-	offlineModeEnabled := verifyOfflineMode()
-
-	if offlineModeEnabled {
-		//Print simulation status per requirement
+	if verifyOfflineMode() {
+		// Print simulation status per requirement
 		days := 3650
 		sim := NewSimulation()
-		sim.Simulate(days, true)
+		sim.Simulate(days, NewSimluatorConfig(true, false))
 
-		//Expose REST api
+		// Expose REST api
 		router := mux.NewRouter()
 		router.HandleFunc("/", IndexEndpoint).Methods("GET")
 		router.HandleFunc("/clima/{dia:[0-9]+}", GetClimateEndpoint).Methods("GET")
 		router.Queries("{dia:[0-9]+}")
 
 		return
+	}
+
+	initDb, days := verifyInitializeDbMode()
+	if initDb {
+		// Persist simulation status per bonus requirement
+		sim := NewSimulation()
+		sim.Simulate(days, NewSimluatorConfig(false, true))
 	}
 }
 
@@ -73,7 +78,7 @@ func GetClimateEndpoint(w http.ResponseWriter, req *http.Request) {
 
 	if err == nil {
 		sim := NewSimulation()
-		climate := sim.Simulate(int(days), false)
+		climate := sim.Simulate(int(days), NewSimluatorConfig(false, false))
 
 		response = &Response{
 			Climate: climate,
@@ -98,7 +103,7 @@ func getClimateResponse(err error, dayIntParam int64) *Response {
 		days := int(dayIntParam)
 
 		sim := NewSimulation()
-		climate := sim.Simulate(int(days), false)
+		climate := sim.Simulate(int(days), NewSimluatorConfig(false, false))
 
 		response = &Response{
 			Climate: climate,

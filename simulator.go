@@ -5,7 +5,7 @@ import (
 	"math"
 )
 
-//This value is the closest to 0 we can get due to decimal error propagation
+// This value is the closest to 0 we can get due to decimal error propagation
 const ZeroAreaEpsillon = float32(6.717457294464111)
 
 // AlphaQuadSimulator - Alpha quadrant planet simulation
@@ -17,6 +17,19 @@ type AlphaQuadSimulator struct {
 	ClimateMap     map[string]int
 	day            int8
 	currentClimate string
+}
+
+// SimulatorConfig - Simulation configuration flags
+type SimulatorConfig struct {
+	ReportToConsole	bool
+	PersistClimates bool
+}
+
+func NewSimluatorConfig(reportToConsole bool, persistClimates bool) *SimulatorConfig {
+	return &SimulatorConfig{
+		ReportToConsole: reportToConsole,
+		PersistClimates: persistClimates,
+	}
 }
 
 // NewSimulation - Create a new simulation starting from default coordinates
@@ -69,7 +82,7 @@ func (a *AlphaQuadSimulator) PrintAsString() {
 }
 
 // Simulate - Simulate the system's planet current positions and prints the results, persisting them into the database
-func (sim *AlphaQuadSimulator) Simulate(days int, reportToConsole bool) string {
+func (sim *AlphaQuadSimulator) Simulate(days int, cfg *SimulatorConfig) string {
 	minAreaDay := 0
 	minArea := math.MaxFloat32
 	lastDayClimate := "regular"
@@ -89,6 +102,7 @@ func (sim *AlphaQuadSimulator) Simulate(days int, reportToConsole bool) string {
 			// Planets are in a triangle
 			if IsPointInTriangle(*sim.Sun.CartesianPosition, *sim.Vulcano.CartesianPosition, *sim.Ferengi.CartesianPosition, *sim.Betasoide.CartesianPosition) {
 				sim.ChangeClimate("rain")
+				// Determine max rain intensity day
 				if area < float32(minArea) {
 				} else {
 					minAreaDay = i
@@ -102,9 +116,13 @@ func (sim *AlphaQuadSimulator) Simulate(days int, reportToConsole bool) string {
 		if i == days {
 			lastDayClimate = sim.currentClimate
 		}
+
+		if cfg.PersistClimates {
+			SaveClimate(i, sim.currentClimate)
+		}
 	}
 
-	if reportToConsole {
+	if cfg.ReportToConsole {
 		fmt.Println("Max rain intensity reported on day:", minAreaDay)
 		fmt.Println("Dry periods:", sim.ClimateMap["dry"])
 		fmt.Println("Optimal climate periods:", sim.ClimateMap["optimal"])
