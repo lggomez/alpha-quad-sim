@@ -124,7 +124,7 @@ func (sim *AlphaQuadSimulator) Simulate(days int, cfg *SimulatorConfig) (string,
 	}
 
 	if cfg.ReportToConsole {
-		fmt.Println(fmt.Sprintf("Min area: %f", minArea))
+		fmt.Println(fmt.Sprintf("Min area - Max perimeter: %f", minArea))
 		fmt.Println("Max rain intensity reported on day:", minAreaDay)
 		fmt.Println("Dry periods:", sim.ClimateMap["dry"])
 		fmt.Println("Optimal climate periods:", sim.ClimateMap["optimal"])

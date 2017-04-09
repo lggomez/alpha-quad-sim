@@ -6,6 +6,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+// GetClimate - Retrieve the climate data for a given day
 func GetClimate(day int) (error, string) {
 	var singleQueryResult string
 	err := error(nil)
@@ -34,6 +35,7 @@ func GetClimate(day int) (error, string) {
 	return err, singleQueryResult
 }
 
+// SaveClimate - Save a climate object to the database
 func SaveClimate(day int, climate string) (error) {
 	err := error(nil)
 

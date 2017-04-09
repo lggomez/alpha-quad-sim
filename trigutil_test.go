@@ -5,6 +5,7 @@ import (
 	"fmt"
 )
 
+// TestIsPointInTriangle - Test the point in triangle area verificaion
 func TestIsPointInTriangle(t *testing.T) {
 	point0 := NewPoint(50, 25)
 	point1 := NewPoint(0, 0)
@@ -70,6 +71,7 @@ func TestIsPointInTriangle(t *testing.T) {
 	}
 }
 
+// TestGetTriangleAreaByPoints - Test the triangle area calculation
 func TestGetTriangleAreaByPoints(t *testing.T) {
 	point1 := NewPoint(0, 0)
 	point2 := NewPoint(50, 50)

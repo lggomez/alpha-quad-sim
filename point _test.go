@@ -4,6 +4,7 @@ import (
 	"testing"
 )
 
+// TestToCartesianPoint - Test the cartesian point generation
 func TestToCartesianPoint(t *testing.T) {
 	point := NewPolarPoint(0, 0).ToCartesianPoint()
 	if !AreApproximatelyEqual(point.Y, 0) || !AreApproximatelyEqual(point.X, 0) && point.X != 0 {

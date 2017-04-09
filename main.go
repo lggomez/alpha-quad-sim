@@ -12,22 +12,25 @@ import (
 const WelcomeMessage = "Welcome to the climate registry. Please access the clima API via 'URL/clima/day' (day is an int)"
 const DefaultDays = 3650
 
+// Response - response object
 type Response struct {
 	Climate string `json:"clima"`
 	Day     int    `json:"dia"`
 }
 
 func main() {
-	initializeRouter()
-	appengine.Main()
-
 	if verifyOfflineMode() {
 		// Print simulation status per requirement
 		days := DefaultDays
 		sim := NewSimulation()
 		sim.Simulate(days, NewSimluatorConfig(true, false))
 	}
+
+	initializeRouter()
+	appengine.Main()
 }
+
+// initializeRouter - Router initialization
 func initializeRouter() {
 	mux := http.NewServeMux()
 
@@ -39,6 +42,7 @@ func initializeRouter() {
 	http.Handle("/", mux)
 }
 
+// tasksHandle - Handler of task action requests
 func tasksHandle(w http.ResponseWriter, r *http.Request) {
 	if r.Header.Get("X-Appengine-Cron") == "true" {
 		taskParam := strings.TrimPrefix(r.URL.Path, "/tasks/")
@@ -63,6 +67,7 @@ func tasksHandle(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// indexHandle - Handler of index requests
 func indexHandle(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
 		http.NotFound(w, r)
@@ -72,6 +77,7 @@ func indexHandle(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(WelcomeMessage)
 }
 
+// climaHandle - Handler of /clima/ action requests
 func climaHandle(w http.ResponseWriter, r *http.Request) {
 	dayParam := r.URL.Query().Get("dia")
 
@@ -98,6 +104,7 @@ func climaHandle(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
+// getClimateResponse - Obtain climate object from the database and generate the response
 func getClimateResponse(dayIntParam int64) (*Response, int) {
 	response := &Response{}
 	var statusCode int
@@ -122,6 +129,7 @@ func getClimateResponse(dayIntParam int64) (*Response, int) {
 	return response, statusCode
 }
 
+// verifyOfflineMode - Verifies if the application has been launched in the offline mode
 func verifyOfflineMode() bool {
 	offlineModeEnabled := false
 	if len(os.Args) > 1 {
