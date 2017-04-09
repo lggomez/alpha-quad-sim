@@ -5,6 +5,13 @@ It makes the following assumptions:
 * The initial state is dry, since planets are aligned with the sun
 * Collinearity of the 3 points in an orbital plane occurs then the area is equal to 0
 * If the 3 planets are collinear and the Sun and the Sun can form a new triangle with 2 points with no area, then the Sun is also collinear with them
+* It takes the continuation of several continued days with the same climate as a period. With each climate transition it increments the period number of that climate
+
+If the area is *tending* to 0 then the climate is on it's peak rain point. We explain it with the following heuristic:
+1. The largest possible side is 3000, given by the line between the most distant opposite planets V and B
+2. The largest inscribed triangle inside a circle is the equilateral triangle, and considering we can’t construct one with these orbits, the largest one for this case will be an isosceles triangle
+3. Following points i and ii and solving via Pythagoras theorem, we can deduct that the largest perimeter tends (but it's not equal) to 6000. This is because the point at which the triangle becomes isosceles is when the area tends to 0 and the sides converge into a line
+
 
 ## Development
 
