@@ -92,7 +92,7 @@ func (sim *AlphaQuadSimulator) Simulate(days int, cfg *SimulatorConfig) (string,
 		area := GetTriangleAreaByPoints(*sim.Vulcano.CartesianPosition, *sim.Ferengi.CartesianPosition, *sim.Betasoide.CartesianPosition)
 
 		// Determine min area for max rain intensity day
-		if area < minArea || i == 1 {
+		if (area < minArea && area != 0) || i == 1 {
 			minArea = area
 		}
 
@@ -124,7 +124,6 @@ func (sim *AlphaQuadSimulator) Simulate(days int, cfg *SimulatorConfig) (string,
 	}
 
 	if cfg.ReportToConsole {
-		fmt.Println(fmt.Sprintf("Min area - Max perimeter: %f", minArea))
 		fmt.Println("Max rain intensity reported on day:", minAreaDay)
 		fmt.Println("Dry periods:", sim.ClimateMap["dry"])
 		fmt.Println("Optimal climate periods:", sim.ClimateMap["optimal"])
