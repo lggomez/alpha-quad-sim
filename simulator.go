@@ -17,7 +17,7 @@ type AlphaQuadSimulator struct {
 
 // SimulatorConfig - Simulation configuration flags
 type SimulatorConfig struct {
-	ReportToConsole	bool
+	ReportToConsole bool
 	PersistClimates bool
 }
 
@@ -132,4 +132,3 @@ func (sim *AlphaQuadSimulator) Simulate(days int, cfg *SimulatorConfig) (string,
 
 	return lastDayClimate, error
 }
-

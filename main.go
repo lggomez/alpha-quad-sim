@@ -75,7 +75,7 @@ func indexHandle(w http.ResponseWriter, r *http.Request) {
 func climaHandle(w http.ResponseWriter, r *http.Request) {
 	dayParam := r.URL.Query().Get("dia")
 
-	if dayParam == ""  {
+	if dayParam == "" {
 		dayParam = strings.TrimPrefix(r.URL.Path, "/clima/")
 	}
 
