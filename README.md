@@ -37,10 +37,23 @@ The database name is *climateregistry* and the only table used is *climates*. It
 | id          | int(11)     | NO   | PRI | NULL    | auto_increment |
 +-------------+-------------+------+-----+---------+----------------+
 ```
-## Deployment
+## Deployment/Testing
+Build:
+```
+go build
+```
+Unit tests can be run with the following command:
+```
+go test
+```
 Deploy it to a Go App Engine project:
 ```
 gcloud app deploy
+```
+
+The app can be run locally, allowing to test the api locally via localhost:3000. It will also print stats for the default duration of 10 years:
+```
+./alpha-quad-sim offline
 ```
 
 ## API
