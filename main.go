@@ -40,6 +40,10 @@ func initializeRouter() {
 	mux.HandleFunc("/clima", climaHandle)
 	mux.HandleFunc("/tasks/", tasksHandle)
 	http.Handle("/", mux)
+
+	if verifyOfflineMode() {
+		http.ListenAndServe(":3000", mux)
+	}
 }
 
 // tasksHandle - Handler of task action requests
