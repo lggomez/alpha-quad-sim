@@ -96,7 +96,7 @@ func (sim *AlphaQuadSimulator) Simulate(days int, cfg *SimulatorConfig) (string,
 			minArea = area
 		}
 
-		if area <= 0 {
+		if area == 0 {
 			// Area tends to 0, planets are aligned
 			if GetTriangleAreaByPoints(*sim.Sun.CartesianPosition, *sim.Vulcano.CartesianPosition, *sim.Betasoide.CartesianPosition) == 0 {
 				// Planets are aligned with the sun
