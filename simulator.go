@@ -2,11 +2,7 @@ package main
 
 import (
 	"fmt"
-	"math"
 )
-
-// This value is the closest to 0 we can get due to decimal error propagation
-const ZeroAreaEpsillon = float32(6.717457294464111)
 
 // AlphaQuadSimulator - Alpha quadrant planet simulation
 type AlphaQuadSimulator struct {
@@ -84,7 +80,7 @@ func (a *AlphaQuadSimulator) PrintAsString() {
 // Simulate - Simulate the system's planet current positions and prints the results, persisting them into the database
 func (sim *AlphaQuadSimulator) Simulate(days int, cfg *SimulatorConfig) (string, error) {
 	minAreaDay := 0
-	minArea := math.MaxFloat32
+	var minArea float32
 	lastDayClimate := "regular"
 	error := error(nil)
 
@@ -95,23 +91,24 @@ func (sim *AlphaQuadSimulator) Simulate(days int, cfg *SimulatorConfig) (string,
 		sim.Advance(int8(i))
 		area := GetTriangleAreaByPoints(*sim.Vulcano.CartesianPosition, *sim.Ferengi.CartesianPosition, *sim.Betasoide.CartesianPosition)
 
-		if area == ZeroAreaEpsillon {
+		// Determine min area for max rain intensity day
+		if area < minArea || i == 1 {
+			minArea = area
+		}
+
+		if area <= 0 {
 			// Area tends to 0, planets are aligned
-			if GetTriangleAreaByPoints(*sim.Sun.CartesianPosition, *sim.Vulcano.CartesianPosition, *sim.Betasoide.CartesianPosition) == ZeroAreaEpsillon {
+			if GetTriangleAreaByPoints(*sim.Sun.CartesianPosition, *sim.Vulcano.CartesianPosition, *sim.Betasoide.CartesianPosition) == 0 {
 				// Planets are aligned with the sun
 				sim.ChangeClimate("dry")
 			} else {
 				sim.ChangeClimate("optimal")
 			}
+		} else {
 			// Planets are in a triangle
 			if IsPointInTriangle(*sim.Sun.CartesianPosition, *sim.Vulcano.CartesianPosition, *sim.Ferengi.CartesianPosition, *sim.Betasoide.CartesianPosition) {
 				sim.ChangeClimate("rain")
-				// Determine max rain intensity day
-				if area < float32(minArea) {
-				} else {
-					minAreaDay = i
-					minArea = float64(area)
-				}
+				minAreaDay = i
 			} else {
 				sim.ChangeClimate("regular")
 			}
@@ -127,6 +124,7 @@ func (sim *AlphaQuadSimulator) Simulate(days int, cfg *SimulatorConfig) (string,
 	}
 
 	if cfg.ReportToConsole {
+		fmt.Println(fmt.Sprintf("Min area: %f", minArea))
 		fmt.Println("Max rain intensity reported on day:", minAreaDay)
 		fmt.Println("Dry periods:", sim.ClimateMap["dry"])
 		fmt.Println("Optimal climate periods:", sim.ClimateMap["optimal"])
