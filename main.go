@@ -123,7 +123,7 @@ func getClimateResponse(dayIntParam int64) (*Response, int) {
 			Day:     int(days),
 		}
 	} else {
-		statusCode = http.StatusBadRequest
+		statusCode = http.StatusInternalServerError
 		response = &Response{
 			Climate: "error: " + err.Error(),
 			Day:     -1,
