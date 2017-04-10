@@ -51,7 +51,7 @@ Deploy it to a Go App Engine project:
 gcloud app deploy
 ```
 
-The app can be run locally, allowing to test the api locally via localhost:3000. It will also print stats for the default duration of 10 years:
+The app can be run locally, allowing to test the api locally via localhost:3000/8080. It will also print stats for the default duration of 10 years:
 ```
 ./alpha-quad-sim offline
 ```
