@@ -61,4 +61,5 @@ The app can be run locally, allowing to test the api locally via localhost:3000/
 The live version can be found at https://superb-webbing-163902.appspot.com and the current api usages are the following:
 
 * https://superb-webbing-163902.appspot.com/clima/566
+* https://superb-webbing-163902.appspot.com/clima?dia=566
 * https://superb-webbing-163902.appspot.com/clima/?dia=566
