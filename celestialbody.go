@@ -30,7 +30,7 @@ func NewCelestialBody(initialCoord *PolarPoint, anglesPerDay int8, clockWiseOrbi
 // AdvancePosition - Calculate the position of the body
 // after x days and update its coordinates. Assumes a
 // constant orbit so the ratio isn't updated
-func (c *CelestialBody) AdvancePosition(days int8) {
+func (c *CelestialBody) AdvancePosition(days int) {
 	angle := c.anglesPerDay
 
 	if c.clockWiseOrbit {

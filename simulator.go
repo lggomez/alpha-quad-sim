@@ -11,7 +11,7 @@ type AlphaQuadSimulator struct {
 	Betasoide      *CelestialBody
 	Vulcano        *CelestialBody
 	ClimateMap     map[string]int
-	day            int8
+	day            int
 	currentClimate string
 }
 
@@ -54,8 +54,8 @@ func NewSimulation() *AlphaQuadSimulator {
 }
 
 // Advance - Advance a day in the simulation and update the positions of all planets
-func (a *AlphaQuadSimulator) Advance(days int8) {
-	a.day = +days
+func (a *AlphaQuadSimulator) Advance(days int) {
+	a.day += days
 	a.Vulcano.AdvancePosition(days)
 	a.Betasoide.AdvancePosition(days)
 	a.Ferengi.AdvancePosition(days)
@@ -88,7 +88,7 @@ func (sim *AlphaQuadSimulator) Simulate(days int, cfg *SimulatorConfig) (string,
 	sim.ChangeClimate("dry")
 
 	for i := 1; i <= days; i++ {
-		sim.Advance(int8(i))
+		sim.Advance(i)
 		area := GetTriangleAreaByPoints(*sim.Vulcano.CartesianPosition, *sim.Ferengi.CartesianPosition, *sim.Betasoide.CartesianPosition)
 
 		// Determine min area for max rain intensity day
