@@ -1,4 +1,4 @@
-package util
+package trigutil
 
 import (
 	"math"

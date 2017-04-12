@@ -5,6 +5,7 @@ import (
 	"alpha-quad-sim/point"
 	"alpha-quad-sim/util"
 	"alpha-quad-sim/database"
+	"alpha-quad-sim/trigutil"
 )
 
 // AlphaQuadSimulator - Alpha quadrant planet simulation
@@ -92,7 +93,7 @@ func (sim *AlphaQuadSimulator) Simulate(days int, cfg *SimulatorConfig) (string,
 
 	for i := 1; i <= days; i++ {
 		sim.Advance(i)
-		area := util.GetTriangleAreaByPoints(*sim.Vulcano.CartesianPosition, *sim.Ferengi.CartesianPosition, *sim.Betasoide.CartesianPosition)
+		area := trigutil.GetTriangleAreaByPoints(*sim.Vulcano.CartesianPosition, *sim.Ferengi.CartesianPosition, *sim.Betasoide.CartesianPosition)
 
 		// Determine min area for max rain intensity day
 		if (area < minArea && area != 0) || i == 1 {
@@ -101,7 +102,7 @@ func (sim *AlphaQuadSimulator) Simulate(days int, cfg *SimulatorConfig) (string,
 
 		if area == 0 {
 			// Area tends to 0, planets are aligned
-			if util.GetTriangleAreaByPoints(*sim.Sun.CartesianPosition, *sim.Vulcano.CartesianPosition, *sim.Betasoide.CartesianPosition) == 0 {
+			if trigutil.GetTriangleAreaByPoints(*sim.Sun.CartesianPosition, *sim.Vulcano.CartesianPosition, *sim.Betasoide.CartesianPosition) == 0 {
 				// Planets are aligned with the sun
 				sim.ChangeClimate("dry")
 			} else {
@@ -109,7 +110,7 @@ func (sim *AlphaQuadSimulator) Simulate(days int, cfg *SimulatorConfig) (string,
 			}
 		} else {
 			// Planets are in a triangle
-			if util.IsPointInTriangle(*sim.Sun.CartesianPosition, *sim.Vulcano.CartesianPosition, *sim.Ferengi.CartesianPosition, *sim.Betasoide.CartesianPosition) {
+			if trigutil.IsPointInTriangle(*sim.Sun.CartesianPosition, *sim.Vulcano.CartesianPosition, *sim.Ferengi.CartesianPosition, *sim.Betasoide.CartesianPosition) {
 				sim.ChangeClimate("rain")
 				minAreaDay = i
 			} else {

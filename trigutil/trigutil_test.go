@@ -1,9 +1,10 @@
-package util
+package trigutil
 
 import (
 	"testing"
 	"fmt"
 	"alpha-quad-sim/point"
+	"alpha-quad-sim/util"
 )
 
 // TestIsPointInTriangle - Test the point in triangle area verificaion
@@ -79,7 +80,7 @@ func TestGetTriangleAreaByPoints(t *testing.T) {
 	point3 := point.NewPoint(100, 0)
 
 	area := GetTriangleAreaByPoints(*point1, *point2, *point3)
-	if !AreApproximatelyEqual(area, 2500) {
+	if !util.AreApproximatelyEqual(area, 2500) {
 		t.Error(fmt.Sprintf("Expected 2500 got %f", area))
 	}
 
@@ -88,7 +89,7 @@ func TestGetTriangleAreaByPoints(t *testing.T) {
 	point3 = point.NewPoint(0, 0)
 
 	area = GetTriangleAreaByPoints(*point1, *point2, *point3)
-	if !AreApproximatelyEqual(area, 2500) {
+	if !util.AreApproximatelyEqual(area, 2500) {
 		t.Error(fmt.Sprintf("Expected 2500 got %f", area))
 	}
 
@@ -97,7 +98,7 @@ func TestGetTriangleAreaByPoints(t *testing.T) {
 	point3 = point.NewPoint(0, 0)
 
 	area = GetTriangleAreaByPoints(*point1, *point2, *point3)
-	if !AreApproximatelyEqual(area, 0) {
+	if !util.AreApproximatelyEqual(area, 0) {
 		t.Error(fmt.Sprintf("Expected 0 got %f", area))
 	}
 
@@ -106,7 +107,7 @@ func TestGetTriangleAreaByPoints(t *testing.T) {
 	point3 = point.NewPoint(1235, 553)
 
 	area = GetTriangleAreaByPoints(*point1, *point2, *point3)
-	if !AreApproximatelyEqual(area, 227745) {
+	if !util.AreApproximatelyEqual(area, 227745) {
 		t.Error(fmt.Sprintf("Expected 227745 got %f", area))
 	}
 
@@ -115,7 +116,7 @@ func TestGetTriangleAreaByPoints(t *testing.T) {
 	point3 = point.NewPoint(-3, -8)
 
 	area = GetTriangleAreaByPoints(*point1, *point2, *point3)
-	if !AreApproximatelyEqual(area, 1) {
+	if !util.AreApproximatelyEqual(area, 1) {
 		t.Error(fmt.Sprintf("Expected 1 got %f", area))
 	}
 }
