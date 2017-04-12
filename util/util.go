@@ -1,4 +1,4 @@
-package main
+package util
 
 import (
 	"os"
@@ -20,7 +20,7 @@ func GetEnvironmentVariable(k string) (string, error) {
 	return v, err
 }
 
-// AreApproximatelyEqual - Returns float equalty within a threshold of 1e-3
+// AreApproximatelyEqual - Returns float equality within a threshold of 1e-3
 func AreApproximatelyEqual(a float32, b float32) bool {
 	return math.Abs(float64(a-b)) < 0.001
 }

@@ -1,9 +1,10 @@
-package main
+package database
 
 import (
 	"database/sql"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
+	"alpha-quad-sim/util"
 )
 
 // GetClimate - Retrieve the climate data for a given day
@@ -11,9 +12,9 @@ func GetClimate(day int) (error, string) {
 	var singleQueryResult string
 	err := error(nil)
 
-	connectionName, err := GetEnvironmentVariable("CLOUDSQL_CONNECTION_NAME")
-	user, err := GetEnvironmentVariable("CLOUDSQL_USER")
-	password, err := GetEnvironmentVariable("CLOUDSQL_PASSWORD")
+	connectionName, err := util.GetEnvironmentVariable("CLOUDSQL_CONNECTION_NAME")
+	user, err := util.GetEnvironmentVariable("CLOUDSQL_USER")
+	password, err := util.GetEnvironmentVariable("CLOUDSQL_PASSWORD")
 
 	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@cloudsql(%s)/", user, password, connectionName))
 	db.Exec("USE climateregistry")
@@ -39,9 +40,9 @@ func GetClimate(day int) (error, string) {
 func SaveClimate(day int, climate string) (error) {
 	err := error(nil)
 
-	connectionName, err := GetEnvironmentVariable("CLOUDSQL_CONNECTION_NAME")
-	user, err := GetEnvironmentVariable("CLOUDSQL_USER")
-	password, err := GetEnvironmentVariable("CLOUDSQL_PASSWORD")
+	connectionName, err := util.GetEnvironmentVariable("CLOUDSQL_CONNECTION_NAME")
+	user, err := util.GetEnvironmentVariable("CLOUDSQL_USER")
+	password, err := util.GetEnvironmentVariable("CLOUDSQL_PASSWORD")
 
 	if err != nil {
 		return err

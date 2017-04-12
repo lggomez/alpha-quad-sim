@@ -1,21 +1,22 @@
-package main
+package simulator
 
 import (
 	"fmt"
+	"alpha-quad-sim/point"
 )
 
 // CelestialBody - Celestial body representation
 // Assumes a circular orbit with constant speed
 type CelestialBody struct {
-	PolarPosition     *PolarPoint
-	CartesianPosition *Point
+	PolarPosition     *point.PolarPoint
+	CartesianPosition *point.Point
 	name              string
 	anglesPerDay      int8
 	clockWiseOrbit    bool
 }
 
 // NewCelestialBody - Create a new point given x and y coordinates
-func NewCelestialBody(initialCoord *PolarPoint, anglesPerDay int8, clockWiseOrbit bool, name string) *CelestialBody {
+func NewCelestialBody(initialCoord *point.PolarPoint, anglesPerDay int8, clockWiseOrbit bool, name string) *CelestialBody {
 	newBody := &CelestialBody{
 		PolarPosition:  initialCoord,
 		name:           name,

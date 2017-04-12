@@ -7,6 +7,8 @@ import (
 	"os"
 	"google.golang.org/appengine"
 	"strings"
+	"alpha-quad-sim/simulator"
+	"alpha-quad-sim/database"
 )
 
 const WelcomeMessage = "Welcome to the climate registry. Please access the clima API via 'URL/clima/day' (day is an int)"
@@ -22,8 +24,8 @@ func main() {
 	if verifyOfflineMode() {
 		// Print simulation status per requirement
 		days := DefaultDays
-		sim := NewSimulation()
-		sim.Simulate(days, NewSimluatorConfig(true, false))
+		sim := simulator.NewSimulation()
+		sim.Simulate(days, simulator.NewSimluatorConfig(true, false))
 	}
 
 	initializeRouter()
@@ -54,8 +56,8 @@ func tasksHandle(w http.ResponseWriter, r *http.Request) {
 		if taskParam == "initdb" {
 			// Print simulation status per requirement
 			days := DefaultDays
-			sim := NewSimulation()
-			_, error := sim.Simulate(days, NewSimluatorConfig(false, true))
+			sim := simulator.NewSimulation()
+			_, error := sim.Simulate(days, simulator.NewSimluatorConfig(false, true))
 
 			if error != nil {
 				w.WriteHeader(http.StatusInternalServerError)
@@ -114,7 +116,7 @@ func getClimateResponse(dayIntParam int64) (*Response, int) {
 	var statusCode int
 	days := int(dayIntParam)
 
-	err, climate := GetClimate(int(days))
+	err, climate := database.GetClimate(int(days))
 
 	if err == nil {
 		statusCode = http.StatusOK
