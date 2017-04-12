@@ -3,7 +3,6 @@ package simulator
 import (
 	"fmt"
 	"alpha-quad-sim/point"
-	"alpha-quad-sim/util"
 	"alpha-quad-sim/database"
 	"alpha-quad-sim/trigutil"
 )
