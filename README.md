@@ -18,11 +18,8 @@ If the area is *tending* to 0 then the climate is on it's peak rain point. We ex
 Prerequisites: Go 1.6 and the Google App Engine SDK are required. Also, this solution is made to be deployed into a Google App Engine project along with a Google Cloud MySQL instance. Both the solution and the database instance should belong to the same project
 
 Other considerations are the following:
-* New files should be added at the root level because App Engine is very picky with the folder structure on imports so the solution won't compile in the cloud otherwise
-* The repository has to be in the **$GOPATH/src** directory
 * The job that initializes the database with newly calculated values can be triggered with the job in **cron.yaml**. The job only populates the database and doesn't delete previous values
 * The database connection can be configured in **app.yaml**
-* Tests can be run with **go test**
 
 ## Database
 The MySQL database connection can be configured via the environment variables in **app.yaml**
@@ -38,6 +35,8 @@ The database name is *climateregistry* and the only table used is *climates*. It
 +-------------+-------------+------+-----+---------+----------------+
 ```
 ## Deployment/Testing
+The repository has to be in the **$GOPATH/src** directory
+
 Build:
 ```
 go build
